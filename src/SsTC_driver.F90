@@ -11,7 +11,10 @@ module SsTC_driver
     get_MPI_task_partition
   !use SsTC_driver_utilities, only: kpath, kslice!!!!!!!!!!!CHECK WHY THIS HAPPENS only in gfortran apparently.
   use MAC, only: container_specifier, container
-  use WannInt, only: crystal, diagonalize
+  use WannInt, only: crystal, diagonalize, &
+    dirac_delta, &
+    deg_list, schur, &
+    SVD, expsh, logu
 
   implicit none
   private
@@ -21,6 +24,12 @@ module SsTC_driver
   public :: container_specifier, container
   public :: crystal
   public :: diagonalize
+  public :: dirac_delta
+  public :: deg_list
+  public :: schur
+  public :: SVD
+  public :: expsh
+  public :: logu
 
   type, public :: task_specifier
     private

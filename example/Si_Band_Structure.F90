@@ -11,6 +11,8 @@ program Si_Band_Structure
   !In this example we calculate the band structure of Si in the
   !L - G - X - K - G path.
 
+  implicit none
+
   real(wp), allocatable :: path(:, :)
   real(wp) :: coords(5, 3)
 

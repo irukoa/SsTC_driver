@@ -16,6 +16,7 @@ program driver
     sample_sum_s_par_3, sample_sum_s_par_4
   use Randomized_Suite, only: sample_rnd_no_sum, sample_rnd_sum
   use Utilities_Suite, only: test_kpath, test_kslice
+  use Material_Properties_Suite, only: sample_and_sum_GaAs_optcond_in_peak
 
   implicit none
 
@@ -192,6 +193,15 @@ program driver
     if (allocated(error)) error stop "Test (2/2): FAILED."
   endif
   if (rank == 0) write (error_unit, "(A)") "Test (2/2): PASSED."
+
+  if (rank == 0) write (error_unit, "(A)") "Suite: Materials Properties Suite:"
+  if (rank == 0) write (error_unit, "(A)") &
+    "Test (1/1): Testing consistency on the calculation of the optical conductivity in GaAs."
+  call sample_and_sum_GaAs_optcond_in_peak(error)
+  if (rank == 0) then
+    if (allocated(error)) error stop "Test (1/1): FAILED."
+  endif
+  if (rank == 0) write (error_unit, "(A)") "Test (1/1): PASSED."
 
   call MPI_FINALIZE(ierror)
 
