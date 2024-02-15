@@ -1,0 +1,33 @@
+name = "SsTC_driver"
+version = "0.1.0"
+license = "GNU General Public License v3.0"
+author = "Álvaro R. Puente-Uriona"
+maintainer = "alvaro.ruiz@ehu.eus"
+copyright = "Copyright 2024, Álvaro R. Puente-Uriona"
+
+[library]
+source-dir="src"
+
+[build]
+auto-executables = true
+auto-tests = true
+auto-examples = true
+module-naming = false
+
+[install]
+library = true
+
+[fortran]
+implicit-typing = true
+implicit-external = true
+source-form = "free"
+
+[dependencies]
+MAC = { git="https://github.com/irukoa/MAC.git" }
+WannInt = { git="https://github.com/irukoa/WannInt.git" }
+mpi = "*"
+openmp = "*"
+
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"
+test-drive.tag = "v0.4.0"
