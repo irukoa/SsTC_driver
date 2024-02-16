@@ -1,4 +1,4 @@
-module SsTC_driver_utilities
+module SsTC_driver_utils
 
   use SsTC_driver_kinds, only: wp => dp
   use MAC, only: container_specifier
@@ -7,8 +7,7 @@ module SsTC_driver_utilities
 
   private
 
-  public :: kpath
-  public :: kslice
+  public :: kpath, kslice
 
 contains
 
@@ -108,4 +107,4 @@ contains
 
   end function kslice
 
-end module SsTC_driver_utilities
+end module SsTC_driver_utils

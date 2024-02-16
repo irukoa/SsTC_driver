@@ -9,7 +9,7 @@ module SsTC_driver
   use SsTC_driver_comms, only: is_mpi_initialized, is_mpi_finalized, &
     rank, nProcs, ierror, &
     get_MPI_task_partition
-  !use SsTC_driver_utilities, only: kpath, kslice!!!!!!!!!!!CHECK WHY THIS HAPPENS only in gfortran apparently.
+  use SsTC_driver_utils, only: kpath, kslice
   use MAC, only: container_specifier, container
   use WannInt, only: crystal, diagonalize, &
     dirac_delta, &
@@ -19,8 +19,8 @@ module SsTC_driver
   implicit none
   private
 
-  !public :: kpath!!!!!!!!!!!CHECK WHY THIS HAPPENS.
-  !public :: kslice
+  public :: kpath
+  public :: kslice
   public :: container_specifier, container
   public :: crystal
   public :: diagonalize
@@ -50,7 +50,7 @@ module SsTC_driver
       sample_pre_sum, sample_part_sum
     procedure, public, pass(self) :: name
     procedure, public, pass(self) :: cdt
-    procedure, public, pass(self) :: is_initialized
+    procedure, public, pass(self) :: initialized => is_initialized
   end type
 
   abstract interface
@@ -203,6 +203,9 @@ contains
 
     character(len=1024) :: errormsg
     integer :: istat
+
+    if (.not. (self%task_initialized)) error stop &
+      "SsTC_driver: Error #4: task_specifier is not initialized."
 
     nk = size(klist(1, :))
     if (size(klist(:, 1)) /= 3) error stop "SsTC_driver: Error #1: size of klist(:, 1) is not 3."
@@ -363,6 +366,9 @@ contains
 
     character(len=1024) :: errormsg
     integer :: istat
+
+    if (.not. (self%task_initialized)) error stop &
+      "SsTC_driver: Error #4: task_specifier is not initialized."
 
     do l = 1, 3
       if (kpart(l) < 1) error stop "SsTC_driver: Error #1: the elements of kpart must be positive integers."
@@ -586,6 +592,9 @@ contains
     character(len=1024) :: errormsg
     integer :: istat
 
+    if (.not. (self%task_initialized)) error stop &
+      "SsTC_driver: Error #4: task_specifier is not initialized."
+
     nk = size(klist(1, :))
     if (size(klist(:, 1)) /= 3) error stop "SsTC_driver: Error #1: size of klist(:, 1) is not 3."
 
@@ -733,6 +742,9 @@ contains
 
     character(len=1024) :: errormsg
     integer :: istat
+
+    if (.not. (self%task_initialized)) error stop &
+      "SsTC_driver: Error #4: task_specifier is not initialized."
 
     do l = 1, 3
       if (kpart(l) < 1) error stop "SsTC_driver: Error #1: the elements of kpart must be positive integers."

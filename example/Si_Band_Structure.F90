@@ -4,7 +4,7 @@ program Si_Band_Structure
   use OMP_LIB
 
   use SsTC_driver_kinds, only: wp => dp
-  use SsTC_driver_utilities, only: kpath
+  use SsTC_driver_utils, only: kpath
   use SsTC_driver, only: task_specifier
   use WannInt, only: crystal, diagonalize
 
