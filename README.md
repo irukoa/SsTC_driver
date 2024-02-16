@@ -1,5 +1,5 @@
 [![Language](https://img.shields.io/badge/-Fortran-734f96?logo=fortran&logoColor=white)](https://github.com/topics/fortran)
-ZENODO PLACEHOLDER
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10672177.svg)](https://doi.org/10.5281/zenodo.10672177)
 [![Testing suite](https://github.com/irukoa/SsTC_driver/actions/workflows/CI.yml/badge.svg)](https://github.com/irukoa/SsTC_driver/actions/workflows/CI.yml)
 
 # SsTC Driver
