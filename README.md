@@ -49,7 +49,7 @@ where
 - `integer, optional, intent(in) :: cont_data_steps(:)` is the dimension specifier of the continuous indices $\beta$ in $C^{\alpha}(\textbf{k}; \beta)$. That is, the size of the array is the number of continuous variables, and the value of each element is the number of steps that the variable has been discretized into. If `cont_data_steps` is not present, $C^{\alpha}(\textbf{k}; \beta)$ does not depend on $\beta$.
 - `real(dp), optional, intent(in) :: cont_data_start(:)` is a real array where each array element specifies the starting sampling point for each of the continuous variables.
 - `real(dp), optional, intent(in) :: cont_data_end(:)` is a real array where each array element specifies the ending sampling point for each of the continuous variables.
-- `real(dp), optional, intent(in) :: exponent` is a real number $e$, which if not present, will sample the variable $\beta_i$ according to $\beta_i(j) =$`cont_data_start(i) + (cont_data_end(i) - cont_data_start(i))`$\times (j-1)/$`(cont_data_steps(i) - 1)`, and if present as $\beta_i(j) \rightarrow e^{\beta_i(j)}$. If `cont_data_steps(i) = 1`, then $\beta_i(j) =$`cont_data_start(i)`.
+- `real(dp), optional, intent(in) :: exponent` is a real number $e$, which if not present, will sample the variable $\beta_i$ according to $\beta_i(j)=$ `cont_data_start(i) + (cont_data_end(i) - cont_data_start(i))` $\times (j-1)/$ `(cont_data_steps(i) - 1)`, and if present as $\beta_i(j) \rightarrow e^{\beta_i(j)}$. If `cont_data_steps(i) = 1`, then $\beta_i(j)=$ `cont_data_start(i)`.
 - `procedure(cs), pass(self) :: calculator` is a function with interface `cs` which corresponds the implementation of $C^{\alpha}(\textbf{k}; \beta)$. See [interface](#interface).
 
 ### Component `type(container_specifier) :: tsk%idims`
@@ -180,7 +180,7 @@ An initialized task is sampled by calling (1st way),
 call tsk%sample(crys, klist, store_at [, parallelization, other])
 ```
 where all present parameters are the same as described in the previous calling way except for
-- `real(dp), intent(in) :: klist(3, nk)`, which is a list of `nk` points where each `klist(:, j)` represents a BZ point $\textbf{k}_j = (k_{j1}, k_{j2}, k_{j3})$, where each coordinate $k_{ji}$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
+- `real(dp), intent(in) :: klist(3, nk)`, which is a list of `nk` points where each `klist(:, j)` represents a BZ point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
 
 ## Utilities
 
@@ -194,9 +194,9 @@ path = kpath(vecs, nkpts)
 ```
 where,
 
-- `real(dp), intent(in) :: vecs(nv, 3)` are the coordinates of `nk` points where each `vecs(:, j)` represents a point $\textbf{k}_j = (k_{j1}, k_{j2}, k_{j3})$, where each $k_{ji}$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
+- `real(dp), intent(in) :: vecs(nv, 3)` are the coordinates of `nk` points where each `vecs(:, j)` represents a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
 - `integer, intent(in)  :: nkpts(nv - 1)` each element `nkpts(i)` is the number of points in a straight line to consider between points `vecs(i, :)`, `vecs(i + 1, :)`.
-- `real(dp), allocatable :: path(:, :)` is the return value. On output, the shape is `[3, nk]`, where `nk = sum(nkpts) - (nvec - 2)`. Each element `path(:, j)` represents a point $\textbf{k}_j = (k_{j1}, k_{j2}, k_{j3})$ along the ordered path, where each $k_{ji}$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
+- `real(dp), allocatable :: path(:, :)` is the return value. On output, the shape is `[3, nk]`, where `nk = sum(nkpts) - (nvec - 2)`. Each element `path(:, j)` represents a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, along the ordered path, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
 
 ### Kslice
 
@@ -206,10 +206,10 @@ slice = kslice(corner, vec_a, vec_b, part)
 ```
 where,
 
-- `real(dp), intent(in) :: corner(3)` are the coordinates of a point $\textbf{k}_j = (k_{j1}, k_{j2}, k_{j3})$, where each $k_{ji}$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates). This parameter represents the bottom-left point of the slice.
-- `real(dp), intent(in) :: vec_a(3), vec_b(3)` are the coordinates of vectors $\textbf{k}_1$ and $\textbf{k}_2$, where each $k_{ji}$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates), representing two vectors defining the slice.
+- `real(dp), intent(in) :: corner(3)` are the coordinates of a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates). This parameter represents the bottom-left point of the slice.
+- `real(dp), intent(in) :: vec_a(3), vec_b(3)` are the coordinates of vectors $\textbf{k}^1$ and $\textbf{k}^2$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates), representing two vectors defining the slice.
 - `integer, intent(in) :: part(2)` is a integer array where each component specifies the number of points to partition each dimension of the BZ into. Each component `part(i)` discretizes the reciprocal lattice vector $\mathbf{b}_i$.
-- `real(dp), allocatable :: slice(:, :)` is the return value. On output, the shape is `[3, nk]`, where `nk = product(part)`. Each element `slice(:, j)` represents a point $\textbf{k}_j = (k_{j1}, k_{j2}, k_{j3})$, where each $k_{ji}$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates). The ordering if $\textbf{k}$ points is given by the order that will be laid out by a [MAC](https://github.com/irukoa/MAC) container specifier with `dimension_specifier = part`.
+- `real(dp), allocatable :: slice(:, :)` is the return value. On output, the shape is `[3, nk]`, where `nk = product(part)`. Each element `slice(:, j)` represents a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates). The ordering if $\textbf{k}$ points is given by the order that will be laid out by a [MAC](https://github.com/irukoa/MAC) container specifier with `dimension_specifier = part`.
 
 # Build
 
@@ -241,6 +241,6 @@ are made public by SsTC_driver.
 
 # Limitations
 
-The mayor limitation lies in memory management when sampling with parallelization. The array `store_at` needs to be dynamically allocated. Its size is given by $($ `nk` $)\times$`product(int_ind)`$\times$`product(cont_data_steps)`. Before making any calculation it is suggested to check the value of its size and choose a parallelization scheme accordingly. It is recommended to use `none` or `OMP` parallelization in PCs and `MPI` or `MPI+OMP` in multinode clusters. If the size of `store_at` is too big, [segmentation faults](https://stackoverflow.com/a/19797710/22403953) may occur. We recommend using only `store_at` in its rank-3 version in sampling calls if peeping the index of $\textbf{k}$ points is important (for plotting or for special integration schemes).
+The mayor limitation lies in memory management when sampling with parallelization. The array `store_at` needs to be dynamically allocated. Its size is given by $($ `nk` $) \times$ `product(int_ind)` $\times$ `product(cont_data_steps)`. Before making any calculation it is suggested to check the value of its size and choose a parallelization scheme accordingly. It is recommended to use `none` or `OMP` parallelization in PCs and `MPI` or `MPI+OMP` in multinode clusters. If the size of `store_at` is too big, [segmentation faults](https://stackoverflow.com/a/19797710/22403953) may occur. We recommend using only `store_at` in its rank-3 version in sampling calls if peeping the index of $\textbf{k}$ points is important (for plotting or for special integration schemes).
 
 We recommend the compilers in the [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit.html) toolkit `ifort/mpiifort` and `ifx/mpiifx` or the GNU compilers `gfortran/mpifort`. If possible, we recommend using the `--heap-arrays` flag for Intel compilers and the `-fmax-stack-var-size=n` flag for GNU compilers.
