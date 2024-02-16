@@ -2,7 +2,7 @@ module Utilities_Suite
   use, intrinsic :: iso_fortran_env, only: error_unit
 
   use SsTC_driver_kinds, only: wp => dp
-  use SsTC_driver_utilities, only: kpath, kslice
+  use SsTC_driver_utils, only: kpath, kslice
 
   use testdrive, only: error_type
 
