@@ -15,10 +15,10 @@ identifiers:
 repository-code: 'https://github.com/irukoa/SsTC_driver'
 url: 'https://github.com/irukoa/SsTC_driver'
 abstract: >-
-  Solid-state Task Constructor Driver. 
-  A backend for automation of sampling and 
-  integration workflows of functions 
-  defined on the Brillouin zone of a 
+  Solid-state Task Constructor Driver.
+  A backend for automation of sampling and
+  integration workflows of functions
+  defined on the Brillouin zone of a
   crystal.
 keywords:
   - Fortran
