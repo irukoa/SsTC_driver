@@ -165,11 +165,11 @@ where
 - `integer, intent(in) :: kpart(3)` is a integer array where each component specifies the number of points to partition each dimension of the BZ into. Each component `kpart(i)` discretizes the reciprocal lattice vector $\mathbf{b}_i$.
 - `complex(dp), allocatable, intent(out) :: store_at(:, :, :)/store_at(:, :)` is a rank-3 or rank-2 array. If rank-3:
   - The first dimension specifies the memory layout representation of $\textbf{k}$ in the order that will be laid out by a [MAC](https://github.com/irukoa/MAC) container specifier with `dimension_specifier = kpart`.
-  - The second dimension is the memory layout representation of a particular permutation of integer indices $\alpha$ in the order laid out by tsk%idims.
-  - The third dimension is the memory layout representation of a particular permutation of continuous variables $\beta$ in the order laid out by tsk%cdims.
+  - The second dimension is the memory layout representation of a particular permutation of integer indices $\alpha$ in the order laid out by `tsk%idims`.
+  - The third dimension is the memory layout representation of a particular permutation of continuous variables $\beta$ in the order laid out by `tsk%cdims`.
 - If rank-2:
-  - The first dimension is the memory layout representation of a particular permutation of integer indices $\alpha$ in the order laid out by tsk%idims.
-  - The second dimension is the memory layout representation of a particular permutation of continuous variables $\beta$ in the order laid out by tsk%cdims.
+  - The first dimension is the memory layout representation of a particular permutation of integer indices $\alpha$ in the order laid out by `tsk%idims`.
+  - The second dimension is the memory layout representation of a particular permutation of continuous variables $\beta$ in the order laid out by `tsk%cdims`.
   - `store_at` holds an unnormalized sum over all the `product(kpart)` points given as input.
 - `character(len=*), optional, intent(in) :: parallelization` is an specification of the parallelization method to employ to distribute the sampling. Options are `MPI+OMP`, `MPI`, `OMP`, `none`. Default is `OMP`.
 - `class(*), optional, intent(in) :: other` is an unlimited polymorphic object to be passed to the calculator during sampling. See [interface](#interface).
@@ -241,6 +241,6 @@ are made public by SsTC_driver.
 
 # Limitations
 
-The mayor limitation lies in memory management when sampling with parallelization. The array `store_at` needs to be dynamically allocated. Its size is given by $($ `nk` $) \times$ `product(int_ind)` $\times$ `product(cont_data_steps)`. Before making any calculation it is suggested to check the value of its size and choose a parallelization scheme accordingly. It is recommended to use `none` or `OMP` parallelization in PCs and `MPI` or `MPI+OMP` in multinode clusters. If the size of `store_at` is too big, [segmentation faults](https://stackoverflow.com/a/19797710/22403953) may occur. We recommend using only `store_at` in its rank-3 version in sampling calls if peeping the index of $\textbf{k}$ points is important (for plotting or for special integration schemes).
+The mayor limitation lies in memory management when sampling with parallelization. The array `store_at` needs to be dynamically allocated. Its size is given by $($ `nk` $) \times$ `product(int_ind)` $\times$ `product(cont_data_steps)`. Before making any calculation it is suggested to check the value of its size and choose a parallelization scheme accordingly. It is recommended to use `none` or `OMP` parallelization in PCs and `MPI` or `MPI+OMP` in multinode clusters. If the size of `store_at` is too big, [segmentation faults](https://stackoverflow.com/a/19797710/22403953) may occur. We recommend using only `store_at` in its rank-3 version in sampling calls if keeping the index of $\textbf{k}$ points is important (for plotting or for special integration schemes).
 
 We recommend the compilers in the [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit.html) toolkit `ifort/mpiifort` and `ifx/mpiifx` or the GNU compilers `gfortran/mpifort`. If possible, we recommend using the `--heap-arrays` flag for Intel compilers and the `-fmax-stack-var-size=n` flag for GNU compilers.
