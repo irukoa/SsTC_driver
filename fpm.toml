@@ -1,5 +1,5 @@
 name = "SsTC_driver"
-version = "0.0.0"
+version = "1.0.0"
 license = "GNU General Public License v3.0"
 author = "Álvaro R. Puente-Uriona"
 maintainer = "alvaro.ruiz@ehu.eus"
@@ -23,8 +23,8 @@ implicit-external = true
 source-form = "free"
 
 [dependencies]
-MAC = { git="https://github.com/irukoa/MAC.git" }
-WannInt = { git="https://github.com/irukoa/WannInt.git" }
+MAC = { git="https://github.com/irukoa/MAC.git", tag = "v1.0.0" }
+WannInt = { git="https://github.com/irukoa/WannInt.git", tag = "v1.0.0" }
 mpi = "*"
 openmp = "*"
 
