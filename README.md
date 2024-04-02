@@ -219,7 +219,7 @@ An automated build is available for [Fortran Package Manager](https://fpm.fortra
 [dependencies]
 SsTC_driver = { git="https://github.com/irukoa/SsTC_driver.git" }
 ```
-to the `fpm.toml` file.
+in the `fpm.toml` file.
 
 [MAC](https://github.com/irukoa/MAC)'s objects
 ``` fortran
