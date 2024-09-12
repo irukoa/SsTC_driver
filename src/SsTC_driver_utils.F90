@@ -2,12 +2,14 @@ module SsTC_driver_utils
 
   use SsTC_driver_kinds, only: wp => dp
   use MAC, only: container_specifier
+  use WannInt, only: crystal, SVD
 
   implicit none
 
   private
 
   public :: kpath, kslice
+  public :: cart_to_crys, crys_to_cart
 
 contains
 
@@ -106,5 +108,36 @@ contains
     enddo
 
   end function kslice
+
+  function crys_to_cart(k_crys, crys) result(k_cart)
+    real(wp), intent(in) :: k_crys(3)
+    class(crystal), intent(in) :: crys
+    real(wp) :: k_cart(3)
+
+    k_cart = matmul(transpose(crys%reciprocal_lattice_basis()), k_crys)
+
+  end function crys_to_cart
+
+  function cart_to_crys(k_cart, crys) result(k_crys)
+    real(wp), intent(in) :: k_cart(3)
+    class(crystal), intent(in) :: crys
+    real(wp) :: k_crys(3)
+
+    integer :: i
+    complex(wp) :: recip_latt_basis(3, 3), &
+                   U(3, 3), V(3, 3), SGM(3, 3)
+    real(wp) :: inv_recip_latt_basis(3, 3)
+
+    recip_latt_basis = cmplx(transpose(crys%reciprocal_lattice_basis()), 0.0_wp, wp)
+
+    call SVD(matrix=recip_latt_basis, U=U, V=V, sigma=sgm)
+    do i = 1, 3
+      SGM(i, i) = cmplx(1.0_wp/real(SGM(i, i), wp), 0.0_wp, wp)
+    enddo
+    inv_recip_latt_basis = real(matmul(matmul(V, SGM), transpose(conjg(U))), wp)
+
+    k_crys = matmul(inv_recip_latt_basis, k_cart)
+
+  end function cart_to_crys
 
 end module SsTC_driver_utils

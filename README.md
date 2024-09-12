@@ -211,6 +211,30 @@ where,
 - `integer, intent(in) :: part(2)` is a integer array where each component specifies the number of points to partition each dimension of the BZ into. Each component `part(i)` discretizes the reciprocal lattice vector $\mathbf{b}_i$.
 - `real(dp), allocatable :: slice(:, :)` is the return value. On output, the shape is `[3, nk]`, where `nk = product(part)`. Each element `slice(:, j)` represents a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates). The ordering if $\textbf{k}$ points is given by the order that will be laid out by a [MAC](https://github.com/irukoa/MAC) container specifier with `dimension_specifier = part`.
 
+### Crystal to cartesian coordinates in k-space
+
+The utility is used as
+```fortran
+k_cart = crys_to_cart(k_crys, crys)
+```
+where,
+
+- `real(dp), intent(in) :: k_crys(3)` are the coordinates of a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
+- `class(crystal), intent(in) :: crys` is a [WannInt](https://github.com/irukoa/WannInt/) crystal.
+- `real(dp), intent(in) :: k_cart(3)` is the return value. On output, the components are the coordinates of a point $\textbf{k}^j=(k^j_x, k^j_y, k^j_z)$, where each $k^j_i$ is the component, in $\text{A}^{-1}$, relative to the cartesian frame used to define the real lattice basis of the crystal `crys`.
+
+### Cartesian to crystal coordinates in k-space
+
+The utility is used as
+```fortran
+k_crys = cart_to_crys(k_cart, crys)
+```
+where,
+
+- `real(dp), intent(in) :: k_cart(3)` are the coordinates of a point $\textbf{k}^j=(k^j_x, k^j_y, k^j_z)$, where each $k^j_i$ is the component, in $\text{A}^{-1}$, relative to the cartesian frame used to define the real lattice basis of the crystal `crys`.
+- `class(crystal), intent(in) :: crys` is a [WannInt](https://github.com/irukoa/WannInt/) crystal.
+- `real(dp), intent(in) :: k_crys(3)` is the return value. On output, the components are the coordinates of a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
+
 # Build
 
 An automated build is available for [Fortran Package Manager](https://fpm.fortran-lang.org/) users. This is the recommended way to build and use WannInt in your projects. You can add WannInt to your project dependencies by including

@@ -2,7 +2,9 @@ module Utilities_Suite
   use, intrinsic :: iso_fortran_env, only: error_unit
 
   use SsTC_driver_kinds, only: wp => dp
-  use SsTC_driver_utils, only: kpath, kslice
+  use SsTC_driver_utils, only: kpath, kslice, &
+    crys_to_cart, cart_to_crys
+  use WannInt, only: crystal
 
   use testdrive, only: error_type
 
@@ -48,5 +50,26 @@ contains
     if (abs(slice(1, 2) - (-0.5_wp + 1.0_wp/9.0_wp)) > tol*epsilon(1.0_wp)) allocate (error)
 
   end subroutine test_kslice
+
+  subroutine test_crys_to_cart_cart_to_crys(error)
+    type(error_type), allocatable, intent(out) :: error
+
+    type(crystal) :: GaAs
+    real(wp) :: point_cart(3), point_crys(3), diff(3)
+
+    call random_seed()
+
+    call GaAs%construct(name="GaAs", &
+                        from_file="./material_data/GaAs_tb.dat", &
+                        fermi_energy=7.7414_wp)
+
+    call random_number(point_cart)
+    point_cart = 100.0_wp*(point_cart - 0.5_wp)
+    point_crys = cart_to_crys(point_cart, GaAs)
+
+    diff = point_cart - crys_to_cart(point_crys, GaAs)
+    if (norm2(diff) > 100*tol*epsilon(1.0_wp)) allocate (error)
+
+  end subroutine test_crys_to_cart_cart_to_crys
 
 end module Utilities_Suite
