@@ -8,7 +8,7 @@ program main
 
   implicit none
 
-  character(len=10) :: ver = "1.0.0"
+  character(len=10) :: ver = "1.0.1"
 
   call MPI_INIT(ierror)
 

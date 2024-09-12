@@ -11,7 +11,7 @@ module SsTC_driver
     get_MPI_task_partition
   use SsTC_driver_utils, only: kpath, kslice, crys_to_cart, cart_to_crys, kpath_length
   use MAC, only: container_specifier, container
-  use WannInt, only: crystal, diagonalize, &
+  use WannInt, only: crystal, diagonalize, inverse, &
     dirac_delta, &
     deg_list, schur, &
     SVD, expsh, logu
@@ -27,6 +27,7 @@ module SsTC_driver
   public :: container_specifier, container
   public :: crystal
   public :: diagonalize
+  public :: inverse
   public :: dirac_delta
   public :: deg_list
   public :: schur
