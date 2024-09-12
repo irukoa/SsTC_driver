@@ -15,7 +15,7 @@ program driver
     sample_sum_s_par_1, sample_sum_s_par_2, &
     sample_sum_s_par_3, sample_sum_s_par_4
   use Randomized_Suite, only: sample_rnd_no_sum, sample_rnd_sum
-  use Utilities_Suite, only: test_kpath, test_kslice, test_crys_to_cart_cart_to_crys
+  use Utilities_Suite, only: test_kpath, test_kslice, test_crys_to_cart_cart_to_crys, test_kpath_length
   use Material_Properties_Suite, only: sample_and_sum_GaAs_optcond_in_peak
 
   implicit none
@@ -179,28 +179,36 @@ program driver
   if (rank == 0) write (error_unit, "(A)") "Suite: Utilities Suite:"
 
   if (rank == 0) write (error_unit, "(A)") &
-    "Test (1/3): Testing kpath utility."
+    "Test (1/4): Testing kpath utility."
   call test_kpath(error)
   if (rank == 0) then
-    if (allocated(error)) error stop "Test (1/3): FAILED."
+    if (allocated(error)) error stop "Test (1/4): FAILED."
   endif
-  if (rank == 0) write (error_unit, "(A)") "Test (1/3): PASSED."
+  if (rank == 0) write (error_unit, "(A)") "Test (1/4): PASSED."
 
   if (rank == 0) write (error_unit, "(A)") &
-    "Test (2/3): Testing kslice utility."
+    "Test (2/4): Testing kslice utility."
   call test_kslice(error)
   if (rank == 0) then
-    if (allocated(error)) error stop "Test (2/3): FAILED."
+    if (allocated(error)) error stop "Test (2/4): FAILED."
   endif
-  if (rank == 0) write (error_unit, "(A)") "Test (2/3): PASSED."
+  if (rank == 0) write (error_unit, "(A)") "Test (2/4): PASSED."
 
   if (rank == 0) write (error_unit, "(A)") &
-    "Test (3/3): Testing crys_to cart and cart_to_crys utilities."
+    "Test (3/4): Testing crys_to cart and cart_to_crys utilities."
   call test_crys_to_cart_cart_to_crys(error)
   if (rank == 0) then
-    if (allocated(error)) error stop "Test (3/3): FAILED."
+    if (allocated(error)) error stop "Test (3/4): FAILED."
   endif
-  if (rank == 0) write (error_unit, "(A)") "Test (3/3): PASSED."
+  if (rank == 0) write (error_unit, "(A)") "Test (3/4): PASSED."
+
+  if (rank == 0) write (error_unit, "(A)") &
+    "Test (4/4): Testing kpath_lenght utility."
+  call test_kpath_length(error)
+  if (rank == 0) then
+    if (allocated(error)) error stop "Test (4/4): FAILED."
+  endif
+  if (rank == 0) write (error_unit, "(A)") "Test (4/4): PASSED."
 
   if (rank == 0) write (error_unit, "(A)") "Suite: Materials Properties Suite:"
   if (rank == 0) write (error_unit, "(A)") &

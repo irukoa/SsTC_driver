@@ -8,7 +8,7 @@ module SsTC_driver_utils
 
   private
 
-  public :: kpath, kslice
+  public :: kpath, kpath_length, kslice
   public :: cart_to_crys, crys_to_cart
 
 contains
@@ -139,5 +139,72 @@ contains
     k_crys = matmul(inv_recip_latt_basis, k_cart)
 
   end function cart_to_crys
+
+  function kpath_length(vecs, nkpts, crys) result(kpt_length)
+    real(wp), intent(in) :: vecs(:, :)
+    integer, intent(in)  :: nkpts(:)
+    class(crystal), intent(in) :: crys
+
+    real(wp), allocatable :: kpt_length(:)
+
+    integer :: nvec, nk
+    integer :: i, ivec, isampling, &
+               count, icount
+    real(wp) :: dir_vec_cart(3), dir_vec_crys(3), lenght_sec
+
+    character(len=1024) :: errormsg
+    integer :: istat
+
+    nvec = size(vecs(:, 1))
+    if (nvec < 2) error stop "SsTC_driver: Error #1: size of vecs(:, 1) must be greater than 1."
+    if (size(vecs(1, :)) /= 3) error stop "SsTC_driver: Error #1: size of vecs(1, :) must be 3."
+    if (size(nkpts) /= nvec - 1) error stop "SsTC_driver: Error #1: size of nkpts must be equal to size of vecs(:, 1) - 1."
+
+    do i = 1, nvec - 1
+      if (nkpts(i) < 2) &
+        error stop "SsTC_driver: Error #1: components of nkpts must be positive integers greater than 1."
+    enddo
+
+    nk = sum(nkpts) - (nvec - 2)
+    allocate (kpt_length(nk), stat=istat)
+    if (istat /= 0) then
+      write (errormsg, "(i20)") istat
+      errormsg = "SsTC_driver: Error #2: failure allocating kpt_length. stat = "//trim(adjustl(errormsg))//"."
+      error stop trim(errormsg)
+    endif
+
+    kpt_length(1) = 0.0_wp
+
+    do i = 2, nk - 1
+
+      count = 0
+      do icount = 1, nvec - 1
+        count = count + nkpts(icount) - 1
+        if (count >= i) then
+          ivec = icount
+          isampling = i - (count - (nkpts(icount) - 1))
+          exit
+        endif
+      enddo
+
+      dir_vec_crys = vecs(ivec + 1, :) - vecs(ivec, :)
+      dir_vec_cart = crys_to_cart(dir_vec_crys, crys)
+      lenght_sec = norm2(dir_vec_cart)
+
+      kpt_length(i) = kpt_length(i - 1) + &
+                      lenght_sec/real(nkpts(ivec) - 1, wp)
+
+    enddo
+    ivec = nvec - 1
+    isampling = nkpts(ivec)
+
+    dir_vec_crys = vecs(ivec + 1, :) - vecs(ivec, :)
+    dir_vec_cart = crys_to_cart(dir_vec_crys, crys)
+    lenght_sec = norm2(dir_vec_cart)
+
+    kpt_length(nk) = kpt_length(i - 1) + &
+                     lenght_sec/real(nkpts(ivec) - 1, wp)
+
+  end function kpath_length
 
 end module SsTC_driver_utils

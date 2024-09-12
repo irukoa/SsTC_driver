@@ -4,7 +4,7 @@ program Si_Band_Structure
   use OMP_LIB
 
   use SsTC_driver_kinds, only: wp => dp
-  use SsTC_driver_utils, only: kpath
+  use SsTC_driver_utils, only: kpath, kpath_length
   use SsTC_driver, only: task_specifier
   use WannInt, only: crystal, diagonalize
 
@@ -13,7 +13,7 @@ program Si_Band_Structure
 
   implicit none
 
-  real(wp), allocatable :: path(:, :)
+  real(wp), allocatable :: path(:, :), path_length(:)
   real(wp) :: coords(5, 3)
 
   type(crystal) :: Si
@@ -45,6 +45,11 @@ program Si_Band_Structure
                     from_file="./material_data/Si_tb.dat", &
                     fermi_energy=6.3869_wp)
 
+  !This will create a array containing the distance traversed along the kpath.
+  !The component path_length(ik) denotes the distance in A^{-1} traversed by the
+  !path until reaching the point path(:, ik).
+  path_length = kpath_length(vecs=coords, nkpts=[100, 100, 100, 100], crys=Si)
+
   !Here, we define the task to sample. It has a single integer-like
   !index ranging from 1 to Si%num_bands() (which in this case is crystal dependent)
   !and the way to calculate it is found in the function band_structure_calculator.
@@ -60,13 +65,13 @@ program Si_Band_Structure
                              parallelization="MPI+OMP")
 
   !Lastly, we print to files.
-  !You can visualize the bands using gnuplot: gnuplot> p 'Si-bands.dat' u 1:5 w l
+  !You can visualize the bands using gnuplot: gnuplot> p 'Si-bands.dat' u 5:6 w l
   if (rank == 0) open (newunit=out, action="write", file=trim(Si%name())//"-bands.dat")
   do ibnd = 1, Si%num_bands()
     do ik = 1, size(path(1, :))
       !Notice, data is always stored in the next order: kpt index, integer-like index and
       !continuous-like index.
-      if (rank == 0) write (unit=out, fmt="(i0, 1x, 4(1xE15.8))") ik, path(:, ik), real(result(ik, ibnd, 1), wp)
+      if (rank == 0) write (unit=out, fmt="(i0, 1x, 5(1xE15.8))") ik, path(:, ik), path_length(ik), real(result(ik, ibnd, 1), wp)
     enddo
     if (rank == 0) write (unit=out, fmt=*) ""
   enddo

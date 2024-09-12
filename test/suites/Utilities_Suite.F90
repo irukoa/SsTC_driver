@@ -2,13 +2,16 @@ module Utilities_Suite
   use, intrinsic :: iso_fortran_env, only: error_unit
 
   use SsTC_driver_kinds, only: wp => dp
-  use SsTC_driver_utils, only: kpath, kslice, &
+  use SsTC_driver_utils, only: kpath, kpath_length, kslice, &
     crys_to_cart, cart_to_crys
   use WannInt, only: crystal
 
   use testdrive, only: error_type
 
-  public :: test_kpath, test_kslice
+  implicit none
+  private
+
+  public :: test_kpath, test_kslice, test_kpath_length, test_crys_to_cart_cart_to_crys
 
   real(wp) :: tol = 1.0E1_wp
 
@@ -34,6 +37,34 @@ contains
     if (abs(path(1, 3) - 1.0_wp/9.0_wp) > tol*epsilon(1.0_wp)) allocate (error)
 
   end subroutine test_kpath
+
+  subroutine test_kpath_length(error)
+    type(error_type), allocatable, intent(out) :: error
+
+    type(crystal) :: GaAs
+    integer, parameter :: nvec = 5
+    real(wp) :: vecs(nvec, 3), total_length
+    real(wp), allocatable :: path_length(:)
+
+    call GaAs%construct(name="GaAs", &
+                        from_file="./material_data/GaAs_tb.dat", &
+                        fermi_energy=7.7414_wp)
+
+    vecs(1, :) = [0.0_wp, 0.0_wp, 0.0_wp]
+    vecs(2, :) = [0.5_wp, 0.0_wp, 0.0_wp]
+    vecs(3, :) = [0.5_wp, 0.5_wp, 0.0_wp]
+    vecs(4, :) = [0.0_wp, 0.5_wp, 0.0_wp]
+    vecs(5, :) = [0.0_wp, 0.0_wp, 0.0_wp]
+
+    path_length = kpath_length(vecs, [10, 10, 10, 10], GaAs)
+
+    total_length = norm2(crys_to_cart(vecs(2, :) - vecs(1, :), GaAs)) + &
+                   norm2(crys_to_cart(vecs(3, :) - vecs(2, :), GaAs)) + &
+                   norm2(crys_to_cart(vecs(4, :) - vecs(3, :), GaAs)) + &
+                   norm2(crys_to_cart(vecs(5, :) - vecs(4, :), GaAs))
+    if (abs(total_length - path_length(size(path_length))) > tol*epsilon(1.0_wp)) allocate (error)
+
+  end subroutine test_kpath_length
 
   subroutine test_kslice(error)
     type(error_type), allocatable, intent(out) :: error

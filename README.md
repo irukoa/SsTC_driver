@@ -235,6 +235,18 @@ where,
 - `class(crystal), intent(in) :: crys` is a [WannInt](https://github.com/irukoa/WannInt/) crystal.
 - `real(dp), intent(in) :: k_crys(3)` is the return value. On output, the components are the coordinates of a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
 
+### Path lenght utility
+The utility is used as
+```fortran
+path_length = kpath_length(vecs, nkpts, crys)
+```
+where,
+
+- `real(dp), intent(in) :: vecs(nv, 3)` are the coordinates of `nk` points where each `vecs(:, j)` represents a point $\textbf{k}^j=(k^j_1, k^j_2, k^j_3)$, where each $k^j_i$ is given in coordinates relative to the reciprocal lattice vectors $\mathbf{b}_i$ (crystal coordinates).
+- `integer, intent(in)  :: nkpts(nv - 1)` each element `nkpts(i)` is the number of points in a straight line to consider between points `vecs(i, :)`, `vecs(i + 1, :)`.
+- `class(crystal), intent(in) :: crys` is a [WannInt](https://github.com/irukoa/WannInt/) crystal.
+- `real(dp), allocatable :: path_length(:)` is the return value. If the array `path` has been constructed by using the `kpath` utility, the `ik`th element of the `path_length` array contains the distance traversed along the kpath, in $\text{A}^{-1}$, up until arriving to the point `path(:, ik)`.
+
 # Build
 
 An automated build is available for [Fortran Package Manager](https://fpm.fortran-lang.org/) users. This is the recommended way to build and use WannInt in your projects. You can add WannInt to your project dependencies by including
