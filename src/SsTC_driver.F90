@@ -9,7 +9,7 @@ module SsTC_driver
   use SsTC_driver_comms, only: is_mpi_initialized, is_mpi_finalized, &
     rank, nProcs, ierror, &
     get_MPI_task_partition
-  use SsTC_driver_utils, only: kpath, kslice
+  use SsTC_driver_utils, only: kpath, kslice, crys_to_cart, cart_to_crys, kpath_length
   use MAC, only: container_specifier, container
   use WannInt, only: crystal, diagonalize, &
     dirac_delta, &
@@ -21,6 +21,9 @@ module SsTC_driver
 
   public :: kpath
   public :: kslice
+  public :: crys_to_cart
+  public :: cart_to_crys
+  public :: kpath_length
   public :: container_specifier, container
   public :: crystal
   public :: diagonalize
